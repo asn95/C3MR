@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>C3MR Field</title>
+    <script src="https://telegram.org/js/telegram-web-app.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --brand: #E81E28;
+            --brand-dark: #c8161f;
+            --ink: #111827;
+            --muted: #6b7280;
+            --faint: #9ca3af;
+            --line: rgba(16,24,40,0.07);
+            --bg: #f4f5f7;
+            --card-shadow: 0 2px 20px -8px rgba(16,24,40,0.12);
+            --ease: cubic-bezier(0.32,0.72,0,1);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: var(--ink);
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100dvh;
+            -webkit-font-smoothing: antialiased;
+        }
+        .hidden { display: none !important; }
+
+        /* ===== HEADER (clean white, Telkom red brand) ===== */
+        .hdr {
+            position: sticky;
+            top: 0;
+            z-index: 30;
+            background: rgba(255,255,255,0.82);
+            backdrop-filter: saturate(180%) blur(14px);
+            -webkit-backdrop-filter: saturate(180%) blur(14px);
+            border-bottom: 1px solid var(--line);
+            box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+            padding: 15px 18px 13px;
+        }
+        .hdr-row1 {
+            font-size: 18px;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            color: var(--ink);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .brand-c { color: var(--brand); }
+        .hdr-row1 .back {
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px; height: 32px;
+            margin-left: -4px;
+            border-radius: 10px;
+            font-size: 13px;
+            color: var(--ink);
+            background: rgba(16,24,40,0.04);
+            transition: transform .25s var(--ease), background .25s var(--ease);
+        }
+        .hdr-row1 .back:active { transform: scale(0.92); }
+        .hdr-status {
+            margin-top: 7px;
+            font-size: 9px;
+            font-weight: 700;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            color: var(--faint);
+        }
+
+        /* ===== INFO BAR ===== */
+        .info-bar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 14px 16px 0;
+            padding: 11px 16px;
+            font-size: 12px;
+            font-weight: 700;
+            color: #374151;
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 14px;
+            box-shadow: var(--card-shadow);
+        }
+        .info-bar span span { color: var(--brand); }
+
+        /* ===== SECTION LABEL (eyebrow) ===== */
+        .sec-label {
+            padding: 22px 18px 12px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2.6px;
+            text-transform: uppercase;
+            color: var(--faint);
+        }
+
+        /* ===== TASK CARD ===== */
+        .tcard {
+            background: #fff;
+            margin: 0 16px 12px;
+            padding: 16px 16px 14px;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            cursor: pointer;
+            transition: transform .4s var(--ease), box-shadow .4s var(--ease);
+        }
+        .tcard:active { transform: scale(0.985); box-shadow: 0 1px 10px -6px rgba(16,24,40,0.18); }
+        .tcard-case {
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 1.6px;
+            text-transform: uppercase;
+            color: var(--faint);
+            margin-bottom: 7px;
+        }
+        .tcard-name {
+            font-size: 16px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+        .tcard-addr {
+            font-size: 12.5px;
+            color: var(--muted);
+            margin-bottom: 12px;
+            line-height: 1.4;
+        }
+        .pbadge {
+            display: inline-block;
+            padding: 4px 11px;
+            border-radius: 999px;
+            font-size: 9px;
+            font-weight: 800;
+            letter-spacing: 0.8px;
+            text-transform: uppercase;
+            margin-bottom: 14px;
+        }
+        .pbadge-1 { background: #fdecec; color: var(--brand); }
+        .pbadge-2 { background: #fef3c7; color: #b45309; }
+        .pbadge-3 { background: #eef1f6; color: #475569; }
+        .tcard-bottom {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .tcard-amt {
+            font-size: 16px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            color: var(--brand);
+        }
+        .tcard-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 0.4px;
+            text-transform: uppercase;
+            color: var(--brand);
+            background: #fdecec;
+            border: none;
+            border-radius: 999px;
+            cursor: pointer;
+            padding: 8px 14px;
+            transition: transform .3s var(--ease), background .3s var(--ease);
+        }
+        .tcard-btn:active { transform: scale(0.95); background: #fbdada; }
+
+        /* ===== REPORT VIEW ===== */
+        .rpt-body { padding: 18px 16px 0; }
+        .subj-label, .obs-label, .cmt-label, .subj-card .subj-label {
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 2.4px;
+            text-transform: uppercase;
+            color: var(--faint);
+            margin-bottom: 12px;
+        }
+        .subj-card {
+            background: #fff;
+            border: 1px solid var(--line);
+            border-radius: 18px;
+            box-shadow: var(--card-shadow);
+            padding: 18px;
+            margin-bottom: 26px;
+        }
+        .subj-name {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.01em;
+            color: var(--ink);
+            margin-bottom: 3px;
+        }
+        .subj-addr {
+            font-size: 12.5px;
+            color: var(--muted);
+            margin-bottom: 14px;
+            line-height: 1.4;
+        }
+        .bal-tag {
+            display: inline-block;
+            background: #fdecec;
+            color: var(--brand);
+            font-size: 14px;
+            font-weight: 800;
+            letter-spacing: -0.01em;
+            padding: 7px 16px;
+            border-radius: 999px;
+        }
+
+        .fgrp { margin-bottom: 18px; }
+        .flbl {
+            font-size: 10.5px;
+            font-weight: 800;
+            letter-spacing: 1.2px;
+            text-transform: uppercase;
+            color: #374151;
+            margin-bottom: 8px;
+            display: block;
+        }
+        .fsel, .ftxt, .cmt-input, .lg-inp {
+            width: 100%;
+            border: 1px solid #e3e6eb;
+            border-radius: 14px;
+            padding: 13px 14px;
+            font-size: 13.5px;
+            font-weight: 500;
+            background: #fff;
+            color: #374151;
+            outline: none;
+            font-family: inherit;
+            transition: border-color .25s var(--ease), box-shadow .25s var(--ease);
+        }
+        .fsel {
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' fill='%236b7280' viewBox='0 0 16 16'%3E%3Cpath d='M8 11L3 6h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 14px center;
+        }
+        .ftxt { resize: none; min-height: 84px; line-height: 1.5; }
+        .fsel:focus, .ftxt:focus, .cmt-input:focus, .lg-inp:focus {
+            border-color: var(--brand);
+            box-shadow: 0 0 0 3px rgba(232,30,40,0.12);
+        }
+
+        .upbox {
+            width: 100%;
+            min-height: 88px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1.5px dashed #d6dae1;
+            border-radius: 14px;
+            padding: 18px;
+            text-align: center;
+            cursor: pointer;
+            background: #fafbfc;
+            transition: border-color .25s var(--ease), background .25s var(--ease);
+        }
+        .upbox:active { background: #f3f4f6; }
+        .upbox.attached { border-style: solid; border-color: var(--brand); background: #fdecec; }
+        .upbox-file { font-size: 11.5px; font-weight: 700; color: var(--ink); letter-spacing: 0.2px; }
+        .upbox-repl { font-size: 9.5px; font-weight: 800; text-transform: uppercase; letter-spacing: 1px; color: var(--brand); margin-top: 4px; }
+        .upbox-ph { font-size: 11px; font-weight: 600; color: var(--faint); letter-spacing: 0.2px; }
+
+        .btn-fin {
+            display: block;
+            width: calc(100% - 32px);
+            margin: 28px auto 26px;
+            background: var(--brand);
+            color: #fff;
+            border: none;
+            border-radius: 16px;
+            padding: 16px;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+            cursor: pointer;
+            text-align: center;
+            box-shadow: 0 10px 24px -10px rgba(232,30,40,0.5);
+            transition: transform .3s var(--ease), background .3s var(--ease);
+        }
+        .btn-fin:active { background: var(--brand-dark); transform: scale(0.985); }
+        .btn-fin:disabled { background: var(--faint); box-shadow: none; }
+
+        /* ===== COMMENT SECTION ===== */
+        .cmt-section { padding: 0 16px; margin-top: 4px; }
+        .cmt-divider { border: none; border-top: 1px solid var(--line); margin: 24px 16px 0; }
+        .cmt-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+        .cmt-tag {
+            padding: 7px 13px;
+            border: 1px solid #e3e6eb;
+            border-radius: 999px;
+            font-size: 10px;
+            font-weight: 700;
+            color: #374151;
+            background: #fff;
+            cursor: pointer;
+            transition: transform .25s var(--ease), background .25s var(--ease), border-color .25s var(--ease), color .25s var(--ease);
+        }
+        .cmt-tag:active { transform: scale(0.95); }
+        .cmt-tag.active { background: var(--brand); color: #fff; border-color: var(--brand); }
+        .cmt-input { min-height: 64px; resize: none; line-height: 1.5; margin-bottom: 10px; }
+        .cmt-send {
+            display: inline-block;
+            background: var(--ink);
+            color: #fff;
+            border: none;
+            border-radius: 999px;
+            padding: 11px 22px;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: transform .3s var(--ease), opacity .3s var(--ease);
+        }
+        .cmt-send:active { transform: scale(0.96); }
+        .cmt-send:disabled { background: var(--faint); }
+        .cmt-list { margin-top: 18px; }
+        .cmt-item { padding: 12px 0; border-bottom: 1px solid var(--line); }
+        .cmt-item:last-child { border-bottom: none; }
+        .cmt-item-tag {
+            display: inline-block;
+            padding: 3px 9px;
+            border-radius: 999px;
+            font-size: 8.5px;
+            font-weight: 800;
+            letter-spacing: 0.6px;
+            text-transform: uppercase;
+            background: #fdecec;
+            color: var(--brand);
+            margin-bottom: 5px;
+        }
+        .cmt-item-msg { font-size: 12.5px; color: #374151; line-height: 1.45; }
+        .cmt-item-time { font-size: 9.5px; color: var(--faint); margin-top: 4px; }
+        .cmt-empty { font-size: 11px; color: var(--faint); text-align: center; padding: 14px 0; }
+
+        /* ===== LOADING ===== */
+        .ld-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100dvh; background: var(--bg); }
+        .ld-sp { width: 38px; height: 38px; border: 3px solid #e5e7eb; border-top-color: var(--brand); border-radius: 50%; animation: sp .7s linear infinite; }
+        @keyframes sp { to { transform: rotate(360deg); } }
+        .ld-tx { margin-top: 16px; font-size: 9.5px; font-weight: 800; letter-spacing: 2.4px; text-transform: uppercase; color: var(--faint); }
+
+        /* ===== LOGIN ===== */
+        .lg-wrap { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100dvh; padding: 32px 26px; background: var(--bg); }
+        .lg-brand { font-size: 26px; font-weight: 800; letter-spacing: -0.03em; color: var(--ink); margin-bottom: 6px; }
+        .lg-sub { font-size: 9.5px; font-weight: 800; letter-spacing: 2.4px; text-transform: uppercase; color: var(--faint); margin-bottom: 30px; }
+        .lg-inp { margin-bottom: 12px; box-shadow: var(--card-shadow); }
+        .lg-btn {
+            width: 100%;
+            background: var(--brand);
+            color: #fff;
+            border: none;
+            border-radius: 14px;
+            padding: 15px;
+            font-size: 11px;
+            font-weight: 800;
+            letter-spacing: 1.8px;
+            text-transform: uppercase;
+            cursor: pointer;
+            box-shadow: 0 10px 24px -10px rgba(232,30,40,0.5);
+            transition: transform .3s var(--ease), background .3s var(--ease);
+        }
+        .lg-btn:active { transform: scale(0.985); background: var(--brand-dark); }
+    </style>
+</head>
+<body>
+
+<!-- Loading -->
+<div id="loading-view" class="ld-wrap">
+    <div class="ld-sp"></div>
+    <p class="ld-tx">Menyiapkan Sistem...</p>
+</div>
+
+<!-- Login Fallback -->
+<div id="login-view" class="hidden lg-wrap">
+    <div class="lg-brand"><span class="brand-c">C</span>3MR Field</div>
+    <p class="lg-sub">Verifikasi Akses</p>
+    <input type="text" id="manual-tid" placeholder="Masukkan Telegram ID" class="lg-inp">
+    <button onclick="manualLogin()" class="lg-btn">Verifikasi Identitas</button>
+</div>
+
+<!-- Task List -->
+<div id="list-view" class="hidden">
+    <div class="hdr">
+        <div class="hdr-row1"><span class="brand-c">C</span>3MR Field</div>
+        <div class="hdr-status">Status Jaringan: Aman · Sinkronisasi Terakhir <span id="sync-time">--:--</span></div>
+    </div>
+    <div class="info-bar">
+        <span>ID: <span id="officer-id">---</span></span>
+        <span><span id="active-cases">0</span> Kasus Aktif</span>
+    </div>
+    <div class="sec-label">Antrean Tugas</div>
+    <div id="task-container"></div>
+</div>
+
+<!-- Report Submission -->
+<div id="detail-view" class="hidden">
+    <div class="hdr">
+        <div class="hdr-row1">
+            <span class="back" id="back-btn">&#9664;</span>
+            <span>Pengiriman Laporan</span>
+        </div>
+    </div>
+    <div class="rpt-body">
+        <div class="subj-label">Data Nasabah</div>
+        <div class="subj-card">
+            <div class="subj-name" id="target-name"></div>
+            <div class="subj-addr" id="target-address"></div>
+            <div class="bal-tag" id="target-amount"></div>
+        </div>
+
+        <div class="obs-label">Observasi Lapangan</div>
+
+        <form id="report-form">
+            <div class="fgrp">
+                <label class="flbl">Klasifikasi *</label>
+                <select id="payment-status" class="fsel">
+                    <option value="Promise to Pay">Janji Bayar (PTP)</option>
+                    <option value="Paid">Lunas</option>
+                    <option value="Refused">Menolak</option>
+                    <option value="Not Home">Tidak di Rumah</option>
+                    <option value="Partial Payment">Bayar Sebagian</option>
+                </select>
+            </div>
+            <div class="fgrp">
+                <label class="flbl">Catatan Petugas</label>
+                <textarea id="notes" class="ftxt" placeholder="Nasabah berkomitmen membayar pada hari Jumat. Verifikasi selesai melalui kunjungan lapangan."></textarea>
+            </div>
+            <div class="fgrp">
+                <label class="flbl">Dokumentasi Bukti *</label>
+                <label class="upbox" id="photo-area">
+                    <div id="photo-preview">
+                        <p class="upbox-ph">Ketuk untuk mengambil bukti foto</p>
+                    </div>
+                    <input type="file" id="photo-input" style="display:none" accept="image/*" capture="environment">
+                </label>
+            </div>
+        </form>
+
+        <hr class="cmt-divider">
+        <div class="cmt-section">
+            <div class="cmt-label">Laporan Kendala</div>
+            <div class="cmt-tags" id="cmt-tags">
+                <span class="cmt-tag" data-tag="wrong_address">Alamat Salah</span>
+                <span class="cmt-tag" data-tag="wrong_phone">Nomor Salah</span>
+                <span class="cmt-tag" data-tag="customer_moved">Customer Pindah</span>
+                <span class="cmt-tag" data-tag="not_found">Tidak Ditemukan</span>
+                <span class="cmt-tag" data-tag="other">Lainnya</span>
+            </div>
+            <textarea id="cmt-input" class="cmt-input" placeholder="Tulis komentar..."></textarea>
+            <button type="button" id="cmt-send" class="cmt-send" onclick="submitComment()">Kirim Komentar</button>
+            <div class="cmt-list" id="cmt-list"></div>
+        </div>
+    </div>
+    <button type="button" id="web-submit-btn" onclick="submitReportWeb()" class="btn-fin">Kirim Laporan</button>
+</div>
+
+<script src="js/app.js?v=2"></script>
+</body>
+</html>

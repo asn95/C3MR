@@ -1,0 +1,41 @@
+# Environment
+.env
+*.db
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+
+# Node
+node_modules/
+frontend/dist/
+
+# Uploads
+backend/uploads/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+
+# Temp directories
+tmp_*/
+_temp/
+
+# Graphify
+graphify-out/
+
+# Temp lock files
+~$*
+
+# Claude/AI
+.claude/
+.agents/
+.codegpt/
+.codex/
+.gemini/
